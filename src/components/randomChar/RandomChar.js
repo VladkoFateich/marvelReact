@@ -5,15 +5,12 @@ import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
 
 import MarvelService from '../../services/MarvelService';
-import Spinner from '../app/spinner/Spinner';
+import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 
 class RandomChar extends Component  {
-    constructor(props){
-        super(props)
-        this.updateChar()
-    }
+
     state = { //для оптимизации все свойства с null просто пустой объект
         char:{},
         loading: true,
@@ -28,6 +25,13 @@ class RandomChar extends Component  {
     }
     marvelService = new MarvelService()
 
+componentDidMount() {
+    this.updateChar()
+    // this.timerId=setInterval(this.updateChar, 3000)
+}
+componentWillUnmount() { //размонтирование компоненты, прерывает setIntrval когда он ненужен уже 
+clearInterval(this.timerId)
+}
     onCharLoaded=(char)=> { // отдельная сущность - действие загрузки персонажа
         this.setState({char, loading: false})
     }
@@ -62,7 +66,7 @@ class RandomChar extends Component  {
                 <p className="randomchar__title">
                     Or choose another one
                 </p>
-                <button className="button button__main">
+                <button onClick={this.updateChar} className="button button__main">
                     <div className="inner">try it</div>
                 </button>
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
@@ -73,7 +77,7 @@ class RandomChar extends Component  {
 
 }
 
-const View = ({char}) => { // скомплнента отрисовки
+const View = ({char}) => { // комплнента отрисовки
     const {name, description, thumbnail, homepage, wiki} = char
     return (
         <div className="randomchar__block">
