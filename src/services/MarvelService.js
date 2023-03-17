@@ -1,6 +1,7 @@
 class MarvelService { // вспомогательный файл
     _apiBase = 'https://gateway.marvel.com:443/v1/public/' // выносим из ссылки что бы не дублировать этот больщой текст в коде
     _apiKey = 'apikey=c19ded73884d887f86ae134cceabe223'
+    _baseOffset = 350
     getResource = async (url) => {
         let res = await fetch(url) // через fetch делается запрос на url помещается в res
         if (!res.ok) {
@@ -9,8 +10,8 @@ class MarvelService { // вспомогательный файл
         return await res.json()
     }
 
-    getAllCharacters = async ()=> { // метод что бы получить всех персонажей
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&${this._apiKey}`)
+    getAllCharacters = async (offset = this._baseOffset)=> { // метод что бы получить всех персонажей
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`)
         return res.data.results.map(this._transformCharacter)
     }
     getCharacter = async (id)=> { // метод получить персонажа по id и сохранить в res
